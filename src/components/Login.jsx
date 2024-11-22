@@ -5,21 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import Background from './Background';
 
 const Login = ({ setIsLoggedIn }) => {
-  // State management
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Navigation hook
   const navigate = useNavigate();
 
-  // Login handler with comprehensive validation
   const handleLogin = () => {
-    // Reset previous errors
     setError('');
 
-    // Basic validation
     if (!username.trim()) {
       setError('Username is required');
       return;
@@ -30,31 +25,35 @@ const Login = ({ setIsLoggedIn }) => {
       return;
     }
 
-    // User credentials
     if (username === 'Donor' && password === '12345') {
-      localStorage.setItem('userToken', 'user-token');
+      localStorage.setItem('userToken', 'donor-token');
       localStorage.setItem('username', username);
       localStorage.setItem('email', 'user@donor.com');
-      localStorage.setItem('userRole', 'user');
+      localStorage.setItem('userRole', 'Donor');
       setIsLoggedIn(true);
       navigate('/successful-login');
     } 
-    // Admin credentials
     else if (username === 'Hospital' && password === '12345') {
-      localStorage.setItem('userToken', 'admin-token');
+      localStorage.setItem('userToken', 'hospital-token');
       localStorage.setItem('username', username);
       localStorage.setItem('email', 'admin@hospital.com');
-      localStorage.setItem('userRole', 'admin');
+      localStorage.setItem('userRole', 'Hospital');
       setIsLoggedIn(true);
       navigate('/successful-login');
-    } 
-    // Invalid credentials
+    }
+    else if (username === 'BloodBankAdmin' && password === '12345') {
+      localStorage.setItem('userToken', 'bloodbank-admin-token');
+      localStorage.setItem('username', username);
+      localStorage.setItem('email', 'admin@bloodbank.com');
+      localStorage.setItem('userRole', 'BloodBankAdmin');
+      setIsLoggedIn(true);
+      navigate('/successful-login');
+    }
     else {
       setError('Invalid username or password');
     }
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin();
@@ -70,12 +69,8 @@ const Login = ({ setIsLoggedIn }) => {
               alt="Blood Bank Logo" 
               className="mx-auto h-24 w-24 mb-4"
             />
-            {/* <h2 className="text-3xl font-extrabold text-gray-900">
-              Sign in to your account
-            </h2> */}
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
               <span className="block sm:inline">{error}</span>
@@ -87,7 +82,6 @@ const Login = ({ setIsLoggedIn }) => {
             onSubmit={handleSubmit}
           >
             <div className="rounded-md shadow-sm -space-y-px">
-              {/* Username Input */}
               <div className="mb-4">
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                   Username or Email
@@ -104,7 +98,6 @@ const Login = ({ setIsLoggedIn }) => {
                 />
               </div>
 
-              {/* Password Input */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
@@ -135,7 +128,6 @@ const Login = ({ setIsLoggedIn }) => {
               </div>
             </div>
 
-            {/* Remember Me and Forgot Password */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
@@ -163,7 +155,6 @@ const Login = ({ setIsLoggedIn }) => {
               </div>
             </div>
 
-            {/* Login Button */}
             <div>
               <button
                 type="submit"
@@ -174,7 +165,6 @@ const Login = ({ setIsLoggedIn }) => {
             </div>
           </form>
 
-          {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <div className="text-sm">
               <span className="text-gray-600">Don't have an account? </span>
@@ -193,3 +183,4 @@ const Login = ({ setIsLoggedIn }) => {
 };
 
 export default Login;
+

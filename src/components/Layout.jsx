@@ -11,7 +11,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     <div className="min-h-screen flex flex-col">
       {!isHeaderHidden && <Header />}
       <main className={`flex-grow ${!isHeaderHidden ? 'pt-16' : ''}`}>
-        {children}
+      <div
+          key={location.pathname}
+          className="animate-fadeIn"
+        >
+          {children}
+        </div>
       </main>
     </div>
   );

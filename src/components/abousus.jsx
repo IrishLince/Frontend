@@ -258,25 +258,24 @@ export default function BloodDonationWebsite() {
         </section>
 
         {/* Contact Section */}
-        <section className="bg-red-50 py-12 px-4 sm:px-6 text-center">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-xl sm:text-2xl font-bold mb-6 text-red-800">Contact Us!</h2>
-            <p className="mb-8 text-sm sm:text-base">Together, we can create a legacy of kindness and care that transforms lives.</p>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {[
-                { icon: Phone, title: 'Phone Number', content: '(555) 123-4567' },
-                { icon: Mail, title: 'Email Address', content: 'info@bloodbank.com' },
-                { icon: MapPin, title: 'Location', content: '123 Medical Avenue' }
-              ].map(({ icon: Icon, title, content }) => (
-                <div key={title} className="flex flex-col items-center">
-                  <Icon className="w-6 h-6 mb-2 text-red-600" />
-                  <h3 className="font-bold text-red-800">{title}</h3>
-                  <p className="text-sm sm:text-base">{content}</p>
-                </div>
-              ))}
-            </div>
+      <section className="bg-red-50 py-12 px-4 sm:px-6 text-center">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 text-red-800">Contact Us!</h2>
+          <p className="mb-8 text-sm sm:text-base">Together, we can create a legacy of kindness and care that transforms lives.</p>
+          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            {[
+              { icon: Phone, title: 'Phone Number', content: '(555) 123-4567' },
+              { icon: Mail, title: 'Email Address', content: 'RedSource@RedSource.com' }
+            ].map(({ icon: Icon, title, content }) => (
+              <div key={title} className="flex flex-col items-center">
+                <Icon className="w-6 h-6 mb-2 text-red-600" />
+                <h3 className="font-bold text-red-800">{title}</h3>
+                <p className="text-sm sm:text-base">{content}</p>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
       </main>
     </div>
   );

@@ -12,7 +12,7 @@ const Background = ({ children }) => {
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="w-full p-4 sm:p-6 md:p-8">
+      <div className="w-full p-4 sm:p-6 md:p-0">
         <div>
           <div>
             {children}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import logo from '../../assets/Logo.png';
 import Header from '../Header'
 
 export default function ConfirmAppointment() {
@@ -219,11 +220,8 @@ export default function ConfirmAppointment() {
               <div className="w-32 h-32 mx-auto mb-6 relative">
                 <div className="w-full h-full bg-[#C91C1C] rounded-full flex items-center justify-center">
                   <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                    <img src="/placeholder.svg?height=48&width=48" alt="Logo" className="w-12 h-12" />
+                  <img src={logo} alt="Logo" className="w-12 h-12" />
                   </div>
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-white text-2xl font-bold">{countdown}</span>
                 </div>
               </div>
 

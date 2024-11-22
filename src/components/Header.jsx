@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, UserCircle2, Settings, LogOut, User, Mail, Home, Calendar, Info } from 'lucide-react';
+import { Menu, X, UserCircle2, Settings, LogOut, User, Mail, Home, Calendar, Info, List } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/Logo.png';
 
@@ -50,7 +50,10 @@ const ProfileDropdown = ({ onLogout, userData }) => {
 
           <div className="py-2">
             <button
-              onClick={() => navigate('/profile-page')}
+              onClick={() => {
+                navigate('/profile-page');
+                setIsOpen(false);
+              }}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
             >
               <User className="w-4 h-4" />
@@ -58,7 +61,10 @@ const ProfileDropdown = ({ onLogout, userData }) => {
             </button>
 
             <button
-              onClick={() => navigate('/settings')}
+              onClick={() => {
+                navigate('/settings');
+                setIsOpen(false);
+              }}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
             >
               <Settings className="w-4 h-4" />
@@ -81,10 +87,10 @@ const ProfileDropdown = ({ onLogout, userData }) => {
   );
 };
 
-const NavLink = ({ to, children, isAuthenticated, isActive, icon }) => {
+const NavLink = ({ to, children, isAuthenticated, isActive, icon, onClick }) => {
   return (
-    <Link
-      to={to}
+    <button
+      onClick={onClick}
       className={`
         px-4 py-2 rounded-lg transition-all duration-300 flex items-center space-x-2
         ${isAuthenticated
@@ -99,7 +105,7 @@ const NavLink = ({ to, children, isAuthenticated, isActive, icon }) => {
     >
       {icon}
       <span>{children}</span>
-    </Link>
+    </button>
   );
 };
 
@@ -171,40 +177,54 @@ const Header = () => {
     navigate('/homepage');
   };
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
+
   const Donor = () => (
     <>
-      <NavLink to="/successful-login" isAuthenticated={isAuthenticated} isActive={location.pathname === '/successful-login'} icon={<Home className="w-5 h-5" />}>Home</NavLink>
-      <NavLink to="/donation-center" isAuthenticated={isAuthenticated} isActive={location.pathname === '/donation-center'} icon={<Calendar className="w-5 h-5" />}>Online Booking</NavLink>
-      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />}>About Us</NavLink>
+      <NavLink to="/successful-login" isAuthenticated={isAuthenticated} isActive={location.pathname === '/successful-login'} icon={<Home className="w-5 h-5" />} onClick={() => handleNavigation('/successful-login')}>Home</NavLink>
+      <NavLink to="/donation-center" isAuthenticated={isAuthenticated} isActive={location.pathname === '/donation-center'} icon={<Calendar className="w-5 h-5" />} onClick={() => handleNavigation('/donation-center')}>Online Booking</NavLink>
+      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />} onClick={() => handleNavigation('/about-us')}>About Us</NavLink>
     </>
   );
 
   const HospitalAdmin = () => (
     <>
-      <NavLink to="/successful-login" isAuthenticated={isAuthenticated} isActive={location.pathname === '/successful-login'} icon={<Home className="w-5 h-5" />}>Home</NavLink>
-      <NavLink to="/hospital" isAuthenticated={isAuthenticated} isActive={location.pathname === '/hospital'} icon={<Calendar className="w-5 h-5" />}>Requests</NavLink>
-      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />}>About Us</NavLink>
+      <NavLink to="/successful-login" isAuthenticated={isAuthenticated} isActive={location.pathname === '/successful-login'} icon={<Home className="w-5 h-5" />} onClick={() => handleNavigation('/successful-login')}>Home</NavLink>
+      <NavLink to="/hospital" isAuthenticated={isAuthenticated} isActive={location.pathname === '/hospital'} icon={<Calendar className="w-5 h-5" />} onClick={() => handleNavigation('/hospital')}>Requests</NavLink>
+      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />} onClick={() => handleNavigation('/about-us')}>About Us</NavLink>
+    </>
+  );
+
+  const BloodBankAdmin = () => (
+    <>
+      <NavLink to="/successful-login" isAuthenticated={isAuthenticated} isActive={location.pathname === '/successful-login'} icon={<Home className="w-5 h-5" />} onClick={() => handleNavigation('/successful-login')}>Home</NavLink>
+      <NavLink to="/hospital" isAuthenticated={isAuthenticated} isActive={location.pathname === '/hospital'} icon={<List className="w-5 h-5" />} onClick={() => handleNavigation('/hospital')}>Hospital</NavLink>
+      <NavLink to="/inventory" isAuthenticated={isAuthenticated} isActive={location.pathname === '/inventory'} icon={<Calendar className="w-5 h-5" />} onClick={() => handleNavigation('/inventory')}>Inventory</NavLink>
+      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />} onClick={() => handleNavigation('/about-us')}>About Us</NavLink>
     </>
   );
 
   const LoggedOutLinks = () => (
     <>
-      <NavLink to="/homepage" isAuthenticated={isAuthenticated} isActive={location.pathname === '/homepage'} icon={<Home className="w-5 h-5" />}>Home</NavLink>
-      <NavLink to="/faqs" isAuthenticated={isAuthenticated} isActive={location.pathname === '/faqs'} icon={<Info className="w-5 h-5" />}>FAQs</NavLink>
-      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />}>About Us</NavLink>
+      <NavLink to="/homepage" isAuthenticated={isAuthenticated} isActive={location.pathname === '/homepage'} icon={<Home className="w-5 h-5" />} onClick={() => handleNavigation('/homepage')}>Home</NavLink>
+      <NavLink to="/faqs" isAuthenticated={isAuthenticated} isActive={location.pathname === '/faqs'} icon={<Info className="w-5 h-5" />} onClick={() => handleNavigation('/faqs')}>FAQs</NavLink>
+      <NavLink to="/about-us" isAuthenticated={isAuthenticated} isActive={location.pathname === '/about-us'} icon={<Info className="w-5 h-5" />} onClick={() => handleNavigation('/about-us')}>About Us</NavLink>
       <div className="flex gap-2">
-        <Link
-          to="/signup"
+        <button
+          onClick={() => handleNavigation('/signup')}
           className="px-4 py-2 rounded-lg bg-white text-red-600 hover:bg-red-50 transition-colors duration-300"
         >
           Sign Up
-        </Link>
-        <Link
-          to="/login"
+        </button>
+        <button
+          onClick={() => handleNavigation('/login')}
           className="px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors duration-300"
         >
           Log In
-        </Link>
+        </button>
       </div>
     </>
   );
@@ -229,16 +249,17 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
-            <Link to={isAuthenticated ? '/successful-login' : '/homepage'}>
+            <button onClick={() => handleNavigation(isAuthenticated ? '/successful-login' : '/homepage')}>
               <div className="w-10 h-10 flex items-center justify-center">
                 <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
               </div>
-            </Link>
+            </button>
           </div>
 
           <nav className="hidden md:flex items-center space-x-2">
             {!isAuthenticated ? <LoggedOutLinks /> : 
-             userRole === 'admin' ? <HospitalAdmin /> : <Donor />}
+             userRole === 'BloodBankAdmin' ? <BloodBankAdmin /> :
+             userRole === 'Hospital' ? <HospitalAdmin /> : <Donor />}
           </nav>
 
           {isAuthenticated && (
@@ -264,7 +285,8 @@ const Header = () => {
           <div className="md:hidden bg-red-600 border-t border-red-700">
             <nav className="flex flex-col space-y-1 px-2 pb-3 pt-2">
               {!isAuthenticated ? <LoggedOutLinks /> : 
-               userRole === 'admin' ? <HospitalAdmin /> : <Donor />}
+               userRole === 'BloodBankAdmin' ? <BloodBankAdmin /> :
+               userRole === 'Hospital' ? <HospitalAdmin /> : <Donor />}
               {isAuthenticated && (
                 <button
                   onClick={handleLogout}

@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Background from './Background';
 import flagLogo from '../assets/Logophonenumber.png';
 import LogoSignup from '../assets/LogoSignup.png';
-import { useNavigate } from 'react-router-dom';
-import Background from './Background'; // import Background component
-import backgroundImage from '../assets/cover.png'; // path to background image
 
-interface SignupProps {
-  setIsLogin: (value: boolean) => void;
-}
-
-export default function Signup({ setIsLogin }: SignupProps) {
+export default function Signup() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
@@ -24,36 +19,64 @@ export default function Signup({ setIsLogin }: SignupProps) {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-    // Handle form submission (e.g., send to server)
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = "Required";
+    if (!formData.address.trim()) newErrors.address = "Required";
+    if (!formData.email.trim()) newErrors.email = "Required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
+    if (!formData.bloodGroup) newErrors.bloodGroup = "Required";
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Required";
+    else if (!/^\d{10}$/.test(formData.phoneNumber)) newErrors.phoneNumber = "10 digits required";
+    if (!formData.password.trim()) newErrors.password = "Required";
+    else if (formData.password.length < 8) newErrors.password = "Min 8 characters";
+    if (!formData.dateOfBirth) newErrors.dateOfBirth = "Required";
+    if (!formData.gender) newErrors.gender = "Required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      try {
+        console.log("Form submitted:", formData);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        navigate('/login');
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
+    }
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   return (
     <Background>
-      <div className="flex items-center justify-center mb-8">
-        <img src={LogoSignup} alt="BloodBank Logo" className="mx-auto w-32 h-32" />
-      </div>
-      <div className="flex-1 flex items-center justify-center w-full">
+      <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 py-8">
+        <div className="mb-4">
+          <img src={LogoSignup} alt="BloodBank Logo" className="w-20 h-20" />
+        </div>
         <form onSubmit={handleSubmit} className="w-full max-w-4xl p-4 bg-white rounded-lg shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Full Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="fullName" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="fullName" className="block text-gray-700 text-xs font-medium mb-1">
                 Full Name
               </label>
               <input
@@ -62,14 +85,14 @@ export default function Signup({ setIsLogin }: SignupProps) {
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none"
+                className={`w-full p-2 rounded-lg border ${errors.fullName ? 'border-red-500' : 'border-gray-300'} text-sm`}
                 placeholder="Full name"
               />
+              {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
             </div>
 
-            {/* Address */}
             <div>
-              <label htmlFor="address" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="address" className="block text-gray-700 text-xs font-medium mb-1">
                 Address
               </label>
               <input
@@ -78,14 +101,14 @@ export default function Signup({ setIsLogin }: SignupProps) {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none"
-                placeholder="123 Quezon Ave., Manila, Metro Manila, Philippines"
+                className={`w-full p-2 rounded-lg border ${errors.address ? 'border-red-500' : 'border-gray-300'} text-sm`}
+                placeholder="Address"
               />
+              {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
             </div>
 
-            {/* Email Address */}
             <div>
-              <label htmlFor="email" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="email" className="block text-gray-700 text-xs font-medium mb-1">
                 Email Address
               </label>
               <input
@@ -94,51 +117,44 @@ export default function Signup({ setIsLogin }: SignupProps) {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none"
-                placeholder="Enter your email"
+                className={`w-full p-2 rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-300'} text-sm`}
+                placeholder="Email"
               />
+              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
             </div>
 
-            {/* Blood Group */}
             <div>
-              <label htmlFor="bloodGroup" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="bloodGroup" className="block text-gray-700 text-xs font-medium mb-1">
                 Blood Group
               </label>
-              <div className="relative">
-                <select
-                  id="bloodGroup"
-                  name="bloodGroup"
-                  value={formData.bloodGroup}
-                  onChange={handleChange}
-                  className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none appearance-none"
-                >
-                  <option value="">SELECT</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
+              <select
+                id="bloodGroup"
+                name="bloodGroup"
+                value={formData.bloodGroup}
+                onChange={handleChange}
+                className={`w-full p-2 rounded-lg border ${errors.bloodGroup ? 'border-red-500' : 'border-gray-300'} text-sm`}
+              >
+                <option value="">SELECT</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+              {errors.bloodGroup && <p className="text-red-500 text-xs mt-1">{errors.bloodGroup}</p>}
             </div>
 
-            {/* Contact Number */}
             <div>
-              <label htmlFor="phoneNumber" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="phoneNumber" className="block text-gray-700 text-xs font-medium mb-1">
                 Contact Number
               </label>
               <div className="flex">
-                <div className="bg-white p-3 rounded-l-lg border border-r-0 border-gray-300 flex items-center">
-                  <img src={flagLogo} alt="Philippines flag" className="w-6 h-4 mr-2" />
-                  <span className="text-gray-800">+63</span>
+                <div className="bg-white p-2 rounded-l-lg border border-r-0 border-gray-300 flex items-center">
+                  <img src={flagLogo} alt="Philippines flag" className="w-4 h-3 mr-1" />
+                  <span className="text-gray-800 text-xs">+63</span>
                 </div>
                 <input
                   type="tel"
@@ -146,16 +162,16 @@ export default function Signup({ setIsLogin }: SignupProps) {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className="flex-1 p-3 rounded-r-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none"
-                  placeholder="Enter phone number"
+                  className={`flex-1 p-2 rounded-r-lg border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} text-sm`}
+                  placeholder="Phone number"
                   maxLength={10}
                 />
               </div>
+              {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="password" className="block text-gray-700 text-xs font-medium mb-1">
                 Password
               </label>
               <div className="relative">
@@ -165,22 +181,22 @@ export default function Signup({ setIsLogin }: SignupProps) {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none pr-10"
+                  className={`w-full p-2 rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} text-sm pr-10`}
                   placeholder="Password"
                 />
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
 
-            {/* Date of Birth */}
             <div>
-              <label htmlFor="dateOfBirth" className="block text-black text-sm font-medium mb-1">
+              <label htmlFor="dateOfBirth" className="block text-gray-700 text-xs font-medium mb-1">
                 Date of Birth
               </label>
               <input
@@ -189,64 +205,63 @@ export default function Signup({ setIsLogin }: SignupProps) {
                 name="dateOfBirth"
                 value={formData.dateOfBirth}
                 onChange={handleChange}
-                className="w-full p-3 rounded-lg border shadow-lg border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-red-500 focus:outline-none"
+                className={`w-full p-2 rounded-lg border ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'} text-sm`}
               />
+              {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
             </div>
 
-            {/* Sex */}
             <div>
-              <div className="flex items-center space-x-4 mb-4">
-                <span className="text-sm font-medium text-black">Sex:</span>
-                <div className="flex items-center space-x-4">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      checked={formData.gender === 'male'}
-                      onChange={handleChange}
-                      className="form-radio text-red-600 focus:ring-red-500 h-4 w-4"
-                    />
-                    <span className="ml-2 text-black">Male</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      checked={formData.gender === 'female'}
-                      onChange={handleChange}
-                      className="form-radio text-red-600 focus:ring-red-500 h-4 w-4"
-                    />
-                    <span className="ml-2 text-black">Female</span>
-                  </label>
-                </div>
+              <span className="block text-gray-700 text-xs font-medium mb-1">Sex</span>
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="male"
+                    checked={formData.gender === 'male'}
+                    onChange={handleChange}
+                    className="form-radio text-red-600 focus:ring-red-500 h-4 w-4"
+                  />
+                  <span className="ml-2 text-gray-700 text-xs">Male</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="female"
+                    checked={formData.gender === 'female'}
+                    onChange={handleChange}
+                    className="form-radio text-red-600 focus:ring-red-500 h-4 w-4"
+                  />
+                  <span className="ml-2 text-gray-700 text-xs">Female</span>
+                </label>
               </div>
+              {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
             </div>
+          </div>
 
-            {/* Submit Button */}
-            <div className="col-span-full flex flex-col items-center mt-6">
+          <div className="mt-6 flex flex-col items-center">
+            <button
+              type="submit"
+              className="w-auto px-4 py-1.5 bg-red-600 text-white rounded-full text-xs font-semibold hover:bg-red-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+              REGISTER
+            </button>
+
+            <p className="mt-4 text-xs text-gray-600">
+              Already have an account?{' '}
               <button
-                type="submit"
-                className="w-full sm:w-auto px-8 py-3 bg-red-600 text-white rounded-full text-sm font-semibold hover:bg-red-700 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
+                type="button"
+                onClick={() => navigate('/login')}
+                className="text-red-600 hover:text-red-700 font-medium transition-colors duration-200"
               >
-                REGISTER
+                Login here
               </button>
-
-              <p className="mt-4 text-sm text-gray-600">
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => navigate('/login')}
-                  className="text-red-600 hover:text-red-700 font-medium transition-colors duration-200"
-                >
-                  Login here
-                </button>
-              </p>
-            </div>
+            </p>
           </div>
         </form>
       </div>
     </Background>
   );
 }
+
